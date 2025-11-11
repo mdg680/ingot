@@ -1,11 +1,23 @@
 from argparse import ArgumentParser
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, Path, UploadFile, HTTPException
 
 app = FastAPI()
 
 @app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    return {"filename": file.filename}
+async def upload_file(file: UploadFile = File(...), destination: Path = None):
+    try:
+        contents = await file.read()
+        # Here you would normally save the file to the destination
+        with open(destination / file.filename, "wb") as f:
+            f.write(contents)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        await file.close()
+    return {
+        "Successfully uploaded filename": file.filename, 
+        "to destination destination": str(destination)
+    }
 
 @app.get("/download/{file_id}")
 async def download_file(file_id: str):
