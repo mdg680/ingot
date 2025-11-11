@@ -1,5 +1,23 @@
 from argparse import ArgumentParser
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
+
+app = FastAPI()
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    return {"filename": file.filename}
+
+@app.get("/download/{file_id}")
+async def download_file(file_id: str):
+    return {"file_id": file_id}
+
+@app.get("/list")
+async def list_files():
+    return {"files": []}
+
+@app.delete("/delete/{file_id}")
+async def delete_file(file_id: str):
+    return {"file_id": file_id}
 
 def parse_args():
     parser = ArgumentParser(description="Ingot CLI")
@@ -11,3 +29,7 @@ def parse_args():
 
     return parser.parse_args()
 
+if __name__ == "__main__":
+    args = parse_args()
+
+    
