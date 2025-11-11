@@ -1,1 +1,13 @@
-# Requirements for the project go here:
+argcomplete==3.6.2
+attrs==25.4.0
+cffi==2.0.0
+click==8.2.1
+cryptography==46.0.3
+distro==1.9.0
+filelock==3.20.0
+packaging==25.0
+pipx==1.8.0
+platformdirs==4.5.0
+pycparser==2.23
+userpath==1.9.2
+wheel==0.45.1
