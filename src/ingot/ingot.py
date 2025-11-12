@@ -3,11 +3,15 @@ from fastapi import FastAPI, File, Path, UploadFile, HTTPException
 
 app = FastAPI()
 
-@app.post("/upload")
-async def upload_file(file: UploadFile = File(...), destination: Path = None):
+@app.post("/upload/{repository_name}/{path:path}")
+async def upload_file(file: UploadFile = File(...), repository_name: str = None, path: str = None):
+    if not repository_name:
+        raise HTTPException(status_code=400, detail="Repository name is required")
     try:
+        # TODO: do multipart uploads properly
         contents = await file.read()
         # Here you would normally save the file to the destination
+        destination = f"/{repository_name}/{path or ''}"
         with open(destination / file.filename, "wb") as f:
             f.write(contents)
     except Exception as e:
