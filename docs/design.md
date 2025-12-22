@@ -70,6 +70,7 @@ Package {
   repo_id
   name
   ecosystem (opkg, npm, docker, generic, etc.)
+  path (optional, not necessary for packages vs 'maybe' generic artifacts)
 }
 ```
 ```
@@ -96,4 +97,41 @@ Blob {
 }
 ```
 
+## API design draft
+### Repositories
+List repositories
+```json
+GET /api/v1/repositories
+```
+Create repository
+```json
+POST /api/v1/repositories
+Content-Type: application/json
+
+{
+  "name": "opkg-core",
+  "type": "opkg",
+  "mode": "hosted",
+  "config": {
+    "description": "Internal opkg packages"
+  }
+}
+```
+Get repository details
+```json
+GET /api/v1/repositories/{name}
+```
+### Artifacts
+Upload artifact (path is optional)
+```http
+PUT /api/v1/repos/{repo}/artifacts/{path}
+Authorization: Bearer <token>
+Content-Type: application/octet-stream
+
+<binary payload>
+```
+List artifacts with filters (Returns JSON list with metadata and URLs.)
+```
+GET /api/v1/repos/{repo}/artifacts?label[branch]=main&limit=50
+```
 
