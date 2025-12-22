@@ -47,3 +47,53 @@ curl -u user:pass -O \
 
 These patterns are inspired by JFrog Artifactory’s REST API, which is widely used in CI/CD pipelines. You can also use tools like the JFrog CLI to simplify these operations with wildcards, parallel uploads, and more.
 Want to build your own minimal artifact server or explore how to secure these endpoints? I’d be happy to help sketch that out too.
+
+## Data model (draft)
+
+### Core entities
+Repository
+```
+Repository {
+  # Fields
+  id
+  name
+  type (opkg, npm, docker, generic, etc.)
+  created_at, updated_at
+  config (JSON: upstream URL for proxy, retention policies, etc.)
+}
+```
+Packages/Artifacts
+```
+Package {
+  # Fields
+  id
+  repo_id
+  name
+  ecosystem (opkg, npm, docker, generic, etc.)
+}
+```
+```
+PackageVersion {
+  # Fields
+  id
+  package_id
+  version
+  status (active, deprecated, yanked)
+  artifact_blob_id (foreign key to blob)
+  metadata (JSON: manifests, dependencies, checksums, etc.)
+  created_at
+}
+```
+Storage
+- On disk as /blobs/sha256/ab/cd/abcdef... for dedup and filesystem friendliness.
+```
+Blob {
+  id
+  digest (e.g. sha256:abcd...)
+  size
+  storage_path (relative blobs root)
+  created_at
+}
+```
+
+
